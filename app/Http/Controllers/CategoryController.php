@@ -15,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category = Category::paginate(10);
+        return $category;
     }
 
     /**
@@ -26,7 +27,8 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        //
+        $category = Category::create($request->validated());
+        return $category;
     }
 
     /**
@@ -37,7 +39,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return response()->json(['category' => $category]);
+        return $category;
     }
 
     /**
@@ -47,9 +49,10 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(StoreCategoryRequest $request, Category $category)
     {
-        //
+        $category->update($request->validated());
+        return $category->refresh();
     }
 
     /**
@@ -60,6 +63,6 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        return $category->delete();
     }
 }
