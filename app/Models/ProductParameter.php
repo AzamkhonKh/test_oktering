@@ -4,21 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderItem extends Model
+class ProductParameter extends Model
 {
     use HasFactory;
-    protected $table = 'order_items';
-    public $timestamps = false;
-    protected $fillable = [
-        'order_id',
-        'product_id',
-    ];
+    use SoftDeletes;
+    protected $table = 'product_parameters';
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
+    protected $fillable = [
+        'name',
+        'value',
+    ];
 
     public function product()
     {
