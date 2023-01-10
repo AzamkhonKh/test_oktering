@@ -23,5 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('/category', CategoryController::class);
 Route::apiResource('/product', ProductController::class);
+Route::get('/product/{id}/parameter', [ProductController::class, 'index_param']);
+Route::post('/product/{id}/parameter', [ProductController::class, 'add_param']);
 Route::get('cart', [OrderController::class, 'get_cart']);
 Route::post('cart', [OrderController::class, 'add_cart']);

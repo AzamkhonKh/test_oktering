@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductParameterStoreRequest;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\ProductParameter;
 
 class ProductController extends Controller
 {
@@ -64,5 +66,16 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         return $product->delete();
+    }
+
+    public function index_param($id)
+    {
+        return ProductParameter::where('product_id', $id)->get();
+    }
+    public function add_param(ProductParameterStoreRequest $request, $id)
+    {
+        $product = Product::find($id);
+        $param = $product->parameters()->create($request->validated());
+        return $param;
     }
 }
