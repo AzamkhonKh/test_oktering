@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddToCartRequest;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\OrderItem;
+use App\Models\Product;
 
 class OrderController extends Controller
 {
@@ -15,7 +18,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $category = Order::paginate(10);
+        return $category;
     }
 
     /**
@@ -26,7 +30,11 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $order = Order::create($request->validated());
+        $order_items = collect(session()->get('cart.items'))
+            ->map(fn(int $product_id) => ['product_id' => $product_id, 'order_id' => $order->id]);
+        OrderItem::insert($order_items);
+        return $order->refresh('items');
     }
 
     /**
@@ -37,19 +45,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateOrderRequest  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateOrderRequest $request, Order $order)
-    {
-        //
+        return $order;
     }
 
     /**
@@ -60,6 +56,18 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        return $order->delete();
+    }
+
+    public function add_cart(AddToCartRequest $request)
+    {
+        session()->push('cart.items', request('product_id'));
+        return $this->get_cart();
+    }
+
+    public function get_cart()
+    {
+        $products = Product::with('parameters')->whereIn('id', session()->get('cart.items'))->get();
+        return $products;
     }
 }

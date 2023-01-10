@@ -13,7 +13,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,10 +21,23 @@ class StoreOrderRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
+    public $phone;
+    public $email;
     public function rules()
     {
+        if(auth()->check()){
+            if(empty($this->phone) )
+            {
+                $this->phone = auth()->user()->phone;
+            }
+            if(empty($this->email) )
+            {
+                $this->email = auth()->user()->email;
+            }
+        }
         return [
-            //
+            'email' => ['reqiured', 'email:rfc,dns'],
+            'phone' => ['required']
         ];
     }
 }
