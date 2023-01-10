@@ -14,14 +14,16 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'width',
-        'height',
-        'weight',
         'category_id',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function parameters()
+    {
+        return $this->hasMany(ProductParameter::class);
     }
 }
