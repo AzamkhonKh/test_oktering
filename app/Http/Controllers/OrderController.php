@@ -67,7 +67,10 @@ class OrderController extends Controller
 
     public function get_cart()
     {
-        $products = Product::with('parameters')->whereIn('id', session()->get('cart.items'))->get();
+        if(!empty(session()->get('cart.items')))
+            $products = Product::with('parameters')->whereIn('id', session()->get('cart.items'))->get();
+        else
+            $products = collect([]);
         return $products;
     }
 }
